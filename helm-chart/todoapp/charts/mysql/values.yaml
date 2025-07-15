@@ -16,7 +16,7 @@ pvc:
 
 persistence:
   memory: 1Gi
-  сpu: 500m
+  cpu: 500m
 
 affinity: {}
 

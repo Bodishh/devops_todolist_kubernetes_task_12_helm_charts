@@ -7,5 +7,5 @@ appVersion: "1.16.0"
 
 dependencies:
   - name: mysql
-    version: "1.0.0"
+    version: "x.y.z"
     repository: "https://example.com/charts"
