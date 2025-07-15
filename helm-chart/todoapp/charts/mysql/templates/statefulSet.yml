@@ -7,7 +7,7 @@ spec:
   selector:
     matchLabels:
       app: mysql
-  replicas: 2
+  replicas: {{ .Values.replicaCount }}
   serviceName: mysql
   template:
     metadata:
@@ -16,24 +16,11 @@ spec:
     spec:
       containers:
       - name: mysql
-        image: mysql:8.0
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         env:
-        - name: MYSQL_ROOT_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: mysql-secrets
-              key: MYSQL_ROOT_PASSWORD
-        - name: MYSQL_USER
-          valueFrom:
-            secretKeyRef:
-              name: mysql-secrets
-              key: MYSQL_USER
-        - name: MYSQL_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: mysql-secrets
-              key: MYSQL_PASSWORD
-        - name: MYSQL_DATABASE
+          {{- range $key, $value := .Values.secrets }}
+          {{ $key }}: {{ $value | b64enc | quote }}
+          {{- end }}
           value: app_db
         ports:
         - name: mysql
@@ -46,8 +33,8 @@ spec:
           mountPath: /docker-entrypoint-initdb.d
         resources:
           requests:
-            cpu: 500m
-            memory: 1Gi
+            cpu: {{ .Values.persistence.сpu }}
+            memory: {{ .Values.persistence.memory }}
         livenessProbe:
           exec:
             command: ["mysqladmin", "ping"]
